@@ -128,7 +128,7 @@ public class ArchetypeTeleOp extends OpMode
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
-        telemetry.addData("Power", gamepad1.y);
+        //telemetry.addData("Power", gamepad1.y);
 
         // set position of servos
         leftservo.setPosition(gamepad1.y ? 1 : 0);
