@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by jdt2 on 11/14/2016.
@@ -18,18 +19,58 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
     // wheel motors
     private DcMotor frontleft = null;
     private DcMotor frontright = null;
-
+    private DcMotor backleft = null;
+    private DcMotor backright = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        telemetry.addData("Status", "Initialized");
+
+        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
+         * to 'get' must correspond to the names assigned during the robot configuration
+         * step (using the FTC Robot Controller app on the phone).
+         */
+
+        // set up motors
         frontleft = hardwareMap.dcMotor.get("frontleft");
         frontright = hardwareMap.dcMotor.get("frontright");
+        backleft = hardwareMap.dcMotor.get("backleft");
+        backright = hardwareMap.dcMotor.get("backright");
+
+        // set motor directions
+        frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontright.setDirection(DcMotorSimple.Direction.FORWARD);
+        backleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backright.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        telemetry.addData("Status", "Initialized");
 
         waitForStart();
 
-        frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontright.setDirection(DcMotorSimple.Direction.FORWARD);
+        // Move forward:
+        // frontleft -, backright +
+
+        // Move backward:
+        // frontleft +, backright -
+
+        // Move left:
+        // frontright -, backleft +
+
+        // Move right:
+        // frontright +, backleft -
+
+        // Turn front right:
+        // frontleft -, frontright +
+
+        // Turn back right
+        // backright -, backleft -
+
+        // Turn front left
+        // frontleft -, frontright -
+
+        // Turn back left
+        // backright -, backleft +
 
         frontleft.setPower(1);
         frontright.setPower(1);
