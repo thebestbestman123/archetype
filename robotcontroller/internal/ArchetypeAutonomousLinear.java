@@ -3,6 +3,7 @@ package org.firstinspires.ftc.robotcontroller.internal;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
@@ -22,10 +23,13 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
     private DcMotor backleft = null;
     private DcMotor backright = null;
 
+    private ColorSensor colorSensor;
+    private IrSeekerSensor irSeeker;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Begin Initialization");
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -44,9 +48,15 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        telemetry.addData("Status", "Initialized");
+        // set up sensors
+        colorSensor = hardwareMap.colorSensor.get("color sensor");
+        irSeeker = hardwareMap.irSeekerSensor.get("irSeeker");
+
+        telemetry.addData("Status", "Finished Initialization");
 
         waitForStart();
+
+        telemetry.addData("Status", "Begin Program");
 
         // Move forward:
         // frontleft -, backright +
@@ -72,20 +82,17 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         // Turn back left
         // backright -, backleft +
 
-        frontleft.setPower(1);
-        frontright.setPower(1);
 
-        sleep(1000);
-
-        frontleft.setPower(0);
-        frontright.setPower(0);
+        // currently moves forward for 1 second, then turns right for 10 seconds (spins).
+        frontleft.setPower(-1);
+        backright.setPower(1);
 
         sleep(1000);
 
         frontleft.setPower(-1);
-        frontright.setPower(-1);
+        frontright.setPower(1);
 
-        sleep(5000);
+        sleep(10000);
 
 //        IrSeekerSensor irSeeker;    // Hardware Device Object
 //
@@ -114,6 +121,8 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
 //            telemetry.update();
 //            idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
 //        }
+
+        telemetry.addData("Status", "Finished with running");
 
     }
 }

@@ -117,14 +117,17 @@ public class ArchetypeColorSensor extends LinearOpMode {
       telemetry.addData("Blue ", colorSensor.blue());
       telemetry.addData("Hue", hsvValues[0]);
 
-      /*int threshold = 100;
-      if(colorSensor.red() > threshold) {
-        telemetry.addData("There is red", colorSensor.red());
-      } else if(colorSensor.blue() > threshold) {
-        telemetry.addData("There is blue", colorSensor.blue());
-      } else if(colorSensor.red() > threshold && colorSensor.blue() > threshold && colorSensor.green() > threshold) {
-        telemetry.addData("There is white", colorSensor.green());
-      }*/
+      int threshold = 18;
+        if(colorSensor.red() > threshold && colorSensor.blue() > threshold && colorSensor.green() > threshold) {
+            telemetry.addData("There is white", colorSensor.green());
+        } else {
+            if (colorSensor.red() > threshold) {
+                telemetry.addData("There is red", colorSensor.red());
+            }
+            if (colorSensor.blue() > threshold) {
+                telemetry.addData("There is blue", colorSensor.blue());
+            }
+        }
 
       // change the background color to match the color detected by the RGB sensor.
       // pass a reference to the hue, saturation, and value array as an argument
