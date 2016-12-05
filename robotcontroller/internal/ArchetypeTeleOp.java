@@ -66,8 +66,8 @@ public class ArchetypeTeleOp extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     // test servos
-    private Servo leftservo = null;
-    private Servo rightservo = null;
+    //private Servo leftservo = null;
+    //private Servo rightservo = null;
 
     // wheel motors
     private DcMotor frontleft = null;
@@ -88,10 +88,10 @@ public class ArchetypeTeleOp extends OpMode
          */
 
         // set up servo
-        leftservo = hardwareMap.servo.get("leftservo");
-        rightservo = hardwareMap.servo.get("rightservo");
+        //leftservo = hardwareMap.servo.get("leftservo");
+        //rightservo = hardwareMap.servo.get("rightservo");
 
-        leftservo.setDirection(Servo.Direction.REVERSE);
+        //leftservo.setDirection(Servo.Direction.REVERSE);
         // set up motors
         frontleft = hardwareMap.dcMotor.get("frontleft");
         frontright = hardwareMap.dcMotor.get("frontright");
@@ -131,14 +131,14 @@ public class ArchetypeTeleOp extends OpMode
         //telemetry.addData("Power", gamepad1.y);
 
         // set position of servos
-        leftservo.setPosition(gamepad1.y ? 1 : 0);
-        rightservo.setPosition(gamepad1.y ? 1 : 0);
+        //leftservo.setPosition(gamepad1.y ? 1 : 0);
+        //rightservo.setPosition(gamepad1.y ? 1 : 0);
 
         // TODO: Fix controls for setting power
-        frontleft.setPower(-gamepad1.left_stick_y);
+        frontleft.setPower(gamepad1.left_stick_y);
         frontright.setPower(gamepad1.right_stick_x);
         backleft.setPower(-gamepad1.left_stick_x);
-        backright.setPower(gamepad1.right_stick_y);
+        backright.setPower(-gamepad1.right_stick_y);
 
     }
 

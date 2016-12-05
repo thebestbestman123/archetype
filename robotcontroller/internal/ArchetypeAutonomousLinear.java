@@ -58,40 +58,25 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
 
         telemetry.addData("Status", "Begin Program");
 
-        // Move forward:
-        // frontleft -, backright +
+        // frontleft forward: negative, backward: positive
+        // backright forward: positive, backward: negative
+        // frontright right: positive, left: negative
+        // backleft right: negative, left: positive
 
-        // Move backward:
-        // frontleft +, backright -
-
-        // Move left:
-        // frontright -, backleft +
-
-        // Move right:
-        // frontright +, backleft -
-
-        // Turn front right:
-        // frontleft -, frontright +
-
-        // Turn back right
-        // backright -, backleft -
-
-        // Turn front left
-        // frontleft -, frontright -
-
-        // Turn back left
-        // backright -, backleft +
-
-
-        // currently moves forward for 1 second, then turns right for 10 seconds (spins).
+        // currently moves forward for 5 seconds, then turns right for 10 seconds (spins).
         frontleft.setPower(-1);
         backright.setPower(1);
+        sleep(5000);
 
+        frontleft.setPower(0);
+        backright.setPower(0);
         sleep(1000);
 
+        // spin right
         frontleft.setPower(-1);
+        backright.setPower(1);
         frontright.setPower(1);
-
+        backleft.setPower(-1);
         sleep(10000);
 
 //        IrSeekerSensor irSeeker;    // Hardware Device Object
@@ -125,4 +110,9 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         telemetry.addData("Status", "Finished with running");
 
     }
+
+    public void forward(int power) {
+
+    }
+
 }
