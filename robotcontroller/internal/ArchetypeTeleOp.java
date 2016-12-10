@@ -75,6 +75,10 @@ public class ArchetypeTeleOp extends OpMode
     private DcMotor backleft = null;
     private DcMotor backright = null;
 
+    private DcMotor shooting = null;
+    private Servo collect1 = null, collect2 = null;
+    private Servo beacon = null;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -97,12 +101,21 @@ public class ArchetypeTeleOp extends OpMode
         frontright = hardwareMap.dcMotor.get("frontright");
         backleft = hardwareMap.dcMotor.get("backleft");
         backright = hardwareMap.dcMotor.get("backright");
+        shooting = hardwareMap.dcMotor.get("shooting");
+        collect1 = hardwareMap.servo.get("collect1");
+        collect2 = hardwareMap.servo.get("collect2");
+        beacon = hardwareMap.servo.get("beacon");
 
         // set motor directions
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontright.setDirection(DcMotorSimple.Direction.FORWARD);
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontleft.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooting.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        collect2.setDirection(Servo.Direction.REVERSE);
+
+        beacon.setPosition(1);
 
         telemetry.addData("Status", "Initialized");
     }
@@ -139,6 +152,30 @@ public class ArchetypeTeleOp extends OpMode
         frontright.setPower(gamepad1.right_stick_x);
         backleft.setPower(-gamepad1.left_stick_x);
         backright.setPower(-gamepad1.right_stick_y);
+
+        // gamepad2
+        // shooting
+        if(gamepad2.y) {
+            shooting.setPower(1);
+        } else {
+            shooting.setPower(0);
+        }
+
+        // collecting/scooping
+        if(gamepad2.x) {
+            collect1.setPosition(1);
+            collect2.setPosition(1);
+        } else if(gamepad2.b) {
+            collect1.setPosition(0);
+            collect2.setPosition(0);
+        }
+
+        // beacon pushing
+        if(gamepad2.a) {
+            beacon.setPosition(0.5);
+        } else {
+            beacon.setPosition(1);
+        }
 
     }
 
