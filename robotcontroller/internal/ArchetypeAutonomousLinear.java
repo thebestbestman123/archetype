@@ -49,8 +49,8 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         backright.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // set up sensors
-        colorSensor = hardwareMap.colorSensor.get("color sensor");
-        irSeeker = hardwareMap.irSeekerSensor.get("irSeeker");
+        //colorSensor = hardwareMap.colorSensor.get("color sensor");
+        //irSeeker = hardwareMap.irSeekerSensor.get("irSeeker");
 
         telemetry.addData("Status", "Finished Initialization");
 
@@ -65,19 +65,12 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
 
         // currently moves forward for 5 seconds, then turns right for 10 seconds (spins).
         frontleft.setPower(-1);
-        backright.setPower(1);
-        sleep(5000);
+        backright.setPower(-1);
+        sleep(3000);
 
         frontleft.setPower(0);
         backright.setPower(0);
         sleep(1000);
-
-        // spin right
-        frontleft.setPower(-1);
-        backright.setPower(1);
-        frontright.setPower(1);
-        backleft.setPower(-1);
-        sleep(10000);
 
 //        IrSeekerSensor irSeeker;    // Hardware Device Object
 //

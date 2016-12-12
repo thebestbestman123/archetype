@@ -75,7 +75,8 @@ public class ArchetypeTeleOp extends OpMode
     private DcMotor backleft = null;
     private DcMotor backright = null;
 
-    private DcMotor shooting = null;
+    private DcMotor shooting1 = null;
+    private DcMotor shooting2 = null;
     private Servo collect1 = null, collect2 = null;
     private Servo beacon = null;
 
@@ -101,7 +102,8 @@ public class ArchetypeTeleOp extends OpMode
         frontright = hardwareMap.dcMotor.get("frontright");
         backleft = hardwareMap.dcMotor.get("backleft");
         backright = hardwareMap.dcMotor.get("backright");
-        shooting = hardwareMap.dcMotor.get("shooting");
+        shooting1 = hardwareMap.dcMotor.get("shooting1");
+        shooting2 = hardwareMap.dcMotor.get("shooting2");
         collect1 = hardwareMap.servo.get("collect1");
         collect2 = hardwareMap.servo.get("collect2");
         beacon = hardwareMap.servo.get("beacon");
@@ -109,9 +111,11 @@ public class ArchetypeTeleOp extends OpMode
         // set motor directions
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontright.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontleft.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooting.setDirection(DcMotorSimple.Direction.FORWARD);
+        backleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backright.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        shooting1.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooting2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         collect2.setDirection(Servo.Direction.REVERSE);
 
@@ -150,15 +154,17 @@ public class ArchetypeTeleOp extends OpMode
         // TODO: Fix controls for setting power
         frontleft.setPower(gamepad1.left_stick_y);
         frontright.setPower(gamepad1.right_stick_x);
-        backleft.setPower(-gamepad1.left_stick_x);
-        backright.setPower(-gamepad1.right_stick_y);
+        backleft.setPower(gamepad1.left_stick_x);
+        backright.setPower(gamepad1.right_stick_y);
 
         // gamepad2
         // shooting
         if(gamepad2.y) {
-            shooting.setPower(1);
+            shooting1.setPower(1);
+            shooting2.setPower(1);
         } else {
-            shooting.setPower(0);
+            shooting1.setPower(0);
+            shooting2.setPower(0);
         }
 
         // collecting/scooping
@@ -172,11 +178,30 @@ public class ArchetypeTeleOp extends OpMode
 
         // beacon pushing
         if(gamepad2.a) {
-            beacon.setPosition(0.5);
+            beacon.setPosition(0.3);
         } else {
             beacon.setPosition(1);
         }
 
+        // let's add turning for the trigger buttons
+        turnright(gamepad1.right_trigger);
+        turnleft(gamepad1.left_trigger);
+
+    }
+
+    public void turnright(double power) {
+        frontleft.setPower(-power);
+        frontright.setPower(power);
+        backleft.setPower(power);
+        backright.setPower(-power);
+    }
+
+    public void turnleft(double power) {
+
+        frontleft.setPower(-power);
+        frontright.setPower(-power);
+        backleft.setPower(-power);
+        backright.setPower(-power);
     }
 
     /*
