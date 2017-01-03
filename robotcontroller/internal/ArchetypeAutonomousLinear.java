@@ -58,7 +58,7 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
 
         telemetry.addData("Status", "Begin Program");
 
-        // frontleft forward: negative, backward: positive
+        // frontleft forward: positive, backward: negative
         // backright forward: positive, backward: negative
         // frontright right: positive, left: negative
         // backleft right: negative, left: positive
