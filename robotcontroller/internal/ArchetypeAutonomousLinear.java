@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by jdt2 on 11/14/2016.
@@ -24,12 +25,23 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
     private DcMotor backright = null;
 
     private ColorSensor colorSensor;
-    private IrSeekerSensor irSeeker;
+    //private IrSeekerSensor irSeeker;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         telemetry.addData("Status", "Begin Initialization");
+        telemetry.update();
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -42,6 +54,17 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         backleft = hardwareMap.dcMotor.get("backleft");
         backright = hardwareMap.dcMotor.get("backright");
 
+        frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+
+        frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // set motor directions
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontright.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -53,59 +76,100 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         //irSeeker = hardwareMap.irSeekerSensor.get("irSeeker");
 
         telemetry.addData("Status", "Finished Initialization");
+        telemetry.update();
 
         waitForStart();
 
         telemetry.addData("Status", "Begin Program");
+        telemetry.update();
 
-        // frontleft forward: negative, backward: positive
-        // backright forward: positive, backward: negative
-        // frontright right: positive, left: negative
-        // backleft right: negative, left: positive
+        // frontright forward: negative, backward: positive
+        // backleft forward: positive, backward: negative
+        // frontleft right: positive, left: negative
+        // backright right: negative, left: positive
 
         // currently moves forward for 5 seconds, then turns right for 10 seconds (spins).
-        frontleft.setPower(-1);
-        backright.setPower(-1);
-        sleep(3000);
+//        frontright.setPower(1);
+//        backleft.setPower(1);
+//        sleep(3000);
+//
+//        frontright.setPower(0);
+//        backleft.setPower(0);
+//        sleep(1000);
 
-        frontleft.setPower(0);
-        backright.setPower(0);
-        sleep(1000);
+        // move toward beacon
+        encoderDrive(TURN_SPEED, 12, -12, 2.0);
+        encoderDrive(DRIVE_SPEED, 48, 48, 5.0);
 
-//        IrSeekerSensor irSeeker;    // Hardware Device Object
-//
-//        // get a reference to our GyroSensor object.
-//        irSeeker = hardwareMap.irSeekerSensor.get("seeker");
-//
-//        // wait for the start button to be pressed.
-//        waitForStart();
-//
-//        while (opModeIsActive())  {
-//
-//            // Ensure we have a IR signal
-//            if (irSeeker.signalDetected())
-//            {
-//                // Display angle and strength
-//                telemetry.addData("Angle",    irSeeker.getAngle());
-//                telemetry.addData("Strength", irSeeker.getStrength());
-//            }
-//
-//            else
-//            {
-//                // Display loss of signal
-//                telemetry.addData("Seeker", "Signal Lost");
-//            }
-//
-//            telemetry.update();
-//            idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
-//        }
+        // push beacon
+
 
         telemetry.addData("Status", "Finished with running");
+        telemetry.update();
 
     }
 
-    public void forward(int power) {
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
 
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontRightTarget = frontright.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newFrontLeftTarget = frontleft.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newBackRightTarget = backright.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newBackLeftTarget = backleft.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            frontright.setTargetPosition(newFrontRightTarget);
+            frontleft.setTargetPosition(newFrontLeftTarget);
+            backright.setTargetPosition(newBackRightTarget);
+            backleft.setTargetPosition(newBackLeftTarget);
+
+            // Turn On RUN_TO_POSITION
+            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            frontleft.setPower(Math.abs(speed));
+            frontright.setPower(Math.abs(speed));
+            backright.setPower(Math.abs(speed));
+            backleft.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (frontright.isBusy() || frontleft.isBusy() || backleft.isBusy() || backright.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        frontright.getCurrentPosition(),
+                        backleft.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            frontright.setPower(0);
+            frontleft.setPower(0);
+            backright.setPower(0);
+            backleft.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
     }
 
 }

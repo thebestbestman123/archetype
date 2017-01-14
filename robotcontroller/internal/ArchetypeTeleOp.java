@@ -77,7 +77,7 @@ public class ArchetypeTeleOp extends OpMode
 
     private DcMotor shooting1 = null;
     private DcMotor shooting2 = null;
-    private Servo collect1 = null, collect2 = null;
+    private DcMotor collect1 = null;
     private Servo beacon = null;
 
     /*
@@ -104,20 +104,22 @@ public class ArchetypeTeleOp extends OpMode
         backright = hardwareMap.dcMotor.get("backright");
         shooting1 = hardwareMap.dcMotor.get("shooting1");
         shooting2 = hardwareMap.dcMotor.get("shooting2");
-        collect1 = hardwareMap.servo.get("collect1");
-        collect2 = hardwareMap.servo.get("collect2");
+        collect1 = hardwareMap.dcMotor.get("collect1");
         beacon = hardwareMap.servo.get("beacon");
 
         // set motor directions
-        frontleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontleft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontright.setDirection(DcMotorSimple.Direction.FORWARD);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backright.setDirection(DcMotorSimple.Direction.FORWARD);
+        backright.setDirection(DcMotorSimple.Direction.REVERSE);
 
         shooting1.setDirection(DcMotorSimple.Direction.FORWARD);
         shooting2.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        collect2.setDirection(Servo.Direction.REVERSE);
+        frontleft.setPower(0);
+        frontright.setPower(0);
+        backleft.setPower(0);
+        backright.setPower(0);
 
         beacon.setPosition(1);
 
@@ -151,11 +153,21 @@ public class ArchetypeTeleOp extends OpMode
         //leftservo.setPosition(gamepad1.y ? 1 : 0);
         //rightservo.setPosition(gamepad1.y ? 1 : 0);
 
+        // test the encoders
+//        telemetry.addData("Frontright Position: ", frontright.getCurrentPosition());
+//        telemetry.addData("frontleft Position: ", frontleft.getCurrentPosition());
+//        telemetry.addData("backright Position: ", backright.getCurrentPosition());
+//        telemetry.addData("backleft Position: ", backleft.getCurrentPosition());
+
         // TODO: Fix controls for setting power
-        frontleft.setPower(gamepad1.left_stick_y);
-        frontright.setPower(gamepad1.right_stick_x);
-        backleft.setPower(gamepad1.left_stick_x);
-        backright.setPower(gamepad1.right_stick_y);
+        telemetry.addData("frontright power", frontright.getPower());
+        telemetry.addData("frontleft power", frontleft.getPower());
+        telemetry.addData("backright power", backright.getPower());
+        telemetry.addData("backleft power", backleft.getPower());
+        frontright.setPower(gamepad1.right_stick_y);
+        frontleft.setPower(gamepad1.left_stick_x);
+        backright.setPower(gamepad1.right_stick_x);
+        backleft.setPower(gamepad1.left_stick_y);
 
         // gamepad2
         // shooting
@@ -169,16 +181,14 @@ public class ArchetypeTeleOp extends OpMode
 
         // collecting/scooping
         if(gamepad2.x) {
-            collect1.setPosition(1);
-            collect2.setPosition(1);
+            collect1.setPower(1);
         } else if(gamepad2.b) {
-            collect1.setPosition(0);
-            collect2.setPosition(0);
+            collect1.setPower(-1);
         }
 
         // beacon pushing
         if(gamepad2.a) {
-            beacon.setPosition(0.3);
+            beacon.setPosition(0);
         } else {
             beacon.setPosition(1);
         }
@@ -187,21 +197,23 @@ public class ArchetypeTeleOp extends OpMode
         turnright(gamepad1.right_trigger);
         turnleft(gamepad1.left_trigger);
 
+        telemetry.update();
+
     }
 
     public void turnright(double power) {
-        frontleft.setPower(-power);
-        frontright.setPower(power);
-        backleft.setPower(power);
-        backright.setPower(-power);
+        frontleft.setPower(power);
+        frontright.setPower(-power);
+        backleft.setPower(-power);
+        backright.setPower(power);
     }
 
     public void turnleft(double power) {
 
-        frontleft.setPower(-power);
-        frontright.setPower(-power);
-        backleft.setPower(-power);
-        backright.setPower(-power);
+        frontright.setPower(power);
+        frontleft.setPower(power);
+        backright.setPower(power);
+        backleft.setPower(power);
     }
 
     /*
