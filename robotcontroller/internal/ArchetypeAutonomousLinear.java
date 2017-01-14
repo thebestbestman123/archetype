@@ -83,10 +83,17 @@ public class ArchetypeAutonomousLinear extends LinearOpMode {
         telemetry.addData("Status", "Begin Program");
         telemetry.update();
 
+<<<<<<< HEAD
         // frontright forward: negative, backward: positive
         // backleft forward: positive, backward: negative
         // frontleft right: positive, left: negative
         // backright right: negative, left: positive
+=======
+        // frontleft forward: positive, backward: negative
+        // backright forward: positive, backward: negative
+        // frontright right: positive, left: negative
+        // backleft right: negative, left: positive
+>>>>>>> 89629526564d47b1a858c33697cd413f086a8429
 
         // currently moves forward for 5 seconds, then turns right for 10 seconds (spins).
 //        frontright.setPower(1);
